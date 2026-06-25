@@ -1,0 +1,66 @@
+services:
+  app:
+    build:
+      context: .
+    restart: unless-stopped
+    environment:
+      APP_HOST: 0.0.0.0
+      PORT: 8000
+      STRICT_STARTUP: "true"
+      DATABASE_URL: ${DEPLOY_DATABASE_URL:-postgresql://user:pass@db:5432/cipdb}
+      RUN_LOG_DB: ${DEPLOY_RUN_LOG_DB:-/app/data/run_logs.db}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      MIN_CONFIDENCE: ${MIN_CONFIDENCE:-0.6}
+      MAX_PAGES: ${MAX_PAGES:-3}
+      CRAWL_DELAY_MS: ${CRAWL_DELAY_MS:-1500}
+      RAW_SAVE: ${RAW_SAVE:-false}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-all-MiniLM-L6-v2}
+      DB_STARTUP_RETRIES: ${DB_STARTUP_RETRIES:-20}
+      DB_STARTUP_DELAY_SECONDS: ${DB_STARTUP_DELAY_SECONDS:-2}
+      DB_CONNECT_TIMEOUT_SECONDS: ${DB_CONNECT_TIMEOUT_SECONDS:-10}
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - appdata:/app/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-cipdb}
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pass}
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_DB:-cipdb}"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  appdata:
+  pgdata:

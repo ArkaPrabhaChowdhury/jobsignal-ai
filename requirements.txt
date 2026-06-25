@@ -1,0 +1,13 @@
+fastapi==0.116.1
+httpx==0.28.1
+itemadapter==0.12.2
+pgvector==0.4.1
+psycopg2-binary==2.9.10
+pydantic==2.11.7
+pytest==8.4.1
+pytest-mock==3.14.1
+python-dotenv==1.1.1
+scrapy==2.13.3
+structlog==25.4.0
+Twisted==24.11.0
+uvicorn==0.35.0

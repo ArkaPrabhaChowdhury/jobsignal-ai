@@ -1,0 +1,14 @@
+__pycache__/
+.pytest_cache/
+.scrapy/
+.venv/
+.env
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+data/raw/
+data/
+pgdata/
+run_logs.db

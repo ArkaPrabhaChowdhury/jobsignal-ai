@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Live India job-market intelligence from normalized job listings and skills data.">
+  <title>Signalwork — India talent intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <a class="brand" href="#overview" aria-label="Signalwork home">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>Signalwork</strong>
+          <span>Talent intelligence</span>
+        </span>
+      </a>
+
+      <nav class="nav-list">
+        <a class="nav-link active" href="#overview">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z"/></svg>
+          Overview
+        </a>
+        <a class="nav-link" href="#ask">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 20-4.35-4.35a7.5 7.5 0 1 0-1.41 1.41L20 21l1-1ZM5 11.5a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0Z"/></svg>
+          Ask the market
+        </a>
+        <a class="nav-link" href="#listings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm1 5v2h12V8H6Zm0 4v2h8v-2H6Zm0 4v2h10v-2H6Z"/></svg>
+          Job listings
+        </a>
+        <a class="nav-link" href="#sources-section">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C7.58 3 4 4.34 4 6s3.58 3 8 3 8-1.34 8-3-3.58-3-8-3ZM4 9v4c0 1.66 3.58 3 8 3s8-1.34 8-3V9c-1.72 1.32-4.8 2-8 2s-6.28-.68-8-2Zm0 7v2c0 1.66 3.58 3 8 3s8-1.34 8-3v-2c-1.72 1.32-4.8 2-8 2s-6.28-.68-8-2Z"/></svg>
+          Data sources
+        </a>
+        <a class="nav-link" href="#ingestion">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v10.17l3.59-3.58L18 11l-6 6-6-6 1.41-1.41L11 13.17V3ZM5 19h14v2H5v-2Z"/></svg>
+          Ingestion
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a href="/docs" target="_blank" rel="noreferrer">API documentation <span>↗</span></a>
+        <a href="/sources" target="_blank" rel="noreferrer">Source catalog <span>↗</span></a>
+        <p>Competitive Intelligence Pipeline</p>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" type="button" aria-label="Open navigation" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h16v2H4v-2Z"/></svg>
+        </button>
+        <div class="topbar-context">
+          <span>India</span>
+          <span class="separator">/</span>
+          <span>Technology talent</span>
+        </div>
+        <div class="topbar-actions">
+          <span class="data-status" id="health-status">Checking data connection</span>
+          <a class="button secondary compact" href="/docs" target="_blank" rel="noreferrer">View API</a>
+        </div>
+      </header>
+
+      <main id="main">
+        <section class="page-heading" id="overview">
+          <div>
+            <h1>India job market</h1>
+            <p>Current hiring demand, skill signals, and source activity from the indexed dataset.</p>
+          </div>
+          <span class="updated-at" id="updated-at">Loading latest snapshot…</span>
+        </section>
+
+        <section class="filter-bar" aria-label="Market filters">
+          <label>
+            Search listings
+            <span class="input-with-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 20-4.35-4.35a7.5 7.5 0 1 0-1.41 1.41L20 21l1-1ZM5 11.5a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0Z"/></svg>
+              <input id="listing-search" type="search" placeholder="Title, company, skill, or city">
+            </span>
+          </label>
+          <label>
+            Source
+            <select id="source-filter">
+              <option value="">All sources</option>
+            </select>
+          </label>
+          <button class="button secondary reset-button" id="reset-filters" type="button">Reset</button>
+        </section>
+
+        <section class="metrics-strip" aria-label="Market summary">
+          <article>
+            <span>Indexed listings</span>
+            <strong id="total-listings">—</strong>
+            <p>Normalized records available for analysis</p>
+          </article>
+          <article>
+            <span>Active sources</span>
+            <strong id="source-count">—</strong>
+            <p>Collection channels represented</p>
+          </article>
+          <article>
+            <span>Tracked runs</span>
+            <strong id="run-count">—</strong>
+            <p>Most recent crawl activity</p>
+          </article>
+          <article>
+            <span>Leading skill</span>
+            <strong class="metric-text" id="leading-skill">—</strong>
+            <p id="leading-skill-detail">Waiting for skill data</p>
+          </article>
+        </section>
+
+        <div class="analysis-grid">
+          <section class="panel skills-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Skills in demand</h2>
+                <p>Frequency across enriched job descriptions</p>
+              </div>
+              <span id="skill-sample">Current index</span>
+            </div>
+            <div class="skill-chart" id="skill-chart" aria-live="polite"></div>
+          </section>
+
+          <section class="panel sources-panel" id="sources-section">
+            <div class="panel-header">
+              <div>
+                <h2>Source coverage</h2>
+                <p>Collection method and indexed volume</p>
+              </div>
+            </div>
+            <div class="source-table" id="source-table" aria-live="polite"></div>
+          </section>
+        </div>
+
+        <section class="panel query-panel" id="ask">
+          <div class="query-intro">
+            <h2>Ask the market</h2>
+            <p>Query the indexed listings with retrieval-backed answers and inspect the source records used.</p>
+            <div class="prompt-list" aria-label="Suggested questions">
+              <button type="button" data-question="What skills are trending in software engineer roles in India?">Trending engineering skills</button>
+              <button type="button" data-question="Which technologies appear most often in backend roles?">Backend technology demand</button>
+              <button type="button" data-question="What are employers asking for in Hyderabad?">Hyderabad hiring signals</button>
+            </div>
+          </div>
+          <form class="query-form" id="query-form">
+            <label for="question">Market question</label>
+            <textarea id="question" name="question" required>What skills are trending in software engineer roles in India?</textarea>
+            <div class="form-actions">
+              <span>Answers are grounded in stored job records.</span>
+              <button class="button primary" type="submit">Run analysis</button>
+            </div>
+          </form>
+          <div class="query-output empty" id="query-result" aria-live="polite">
+            <p>Analysis will appear here.</p>
+          </div>
+        </section>
+
+        <section class="panel listings-panel" id="listings">
+          <div class="panel-header">
+            <div>
+              <h2>Recent job listings</h2>
+              <p>Latest normalized records with enrichment confidence</p>
+            </div>
+            <span id="listing-count">0 results</span>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>Company</th>
+                  <th>Location</th>
+                  <th>Skills</th>
+                  <th>Source</th>
+                  <th>Confidence</th>
+                </tr>
+              </thead>
+              <tbody id="listing-body"></tbody>
+            </table>
+          </div>
+          <div class="empty-state hidden" id="listing-empty">No listings match the current filters.</div>
+        </section>
+
+        <div class="operations-grid">
+          <section class="panel" id="ingestion">
+            <div class="panel-header">
+              <div>
+                <h2>Start an ingestion run</h2>
+                <p>Collect fresh listings for a role and selected sources</p>
+              </div>
+            </div>
+            <form class="ingest-form" id="ingest-form">
+              <label for="role">Target role</label>
+              <input id="role" name="role" value="software engineer" required>
+              <label for="sources">Sources</label>
+              <select id="sources" name="sources" multiple required></select>
+              <span class="field-note">Use Ctrl/Cmd to select multiple sources.</span>
+              <button class="button primary" type="submit">Start ingestion</button>
+            </form>
+            <div class="inline-result hidden" id="ingest-result" aria-live="polite"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Recent crawl runs</h2>
+                <p>Fetch, storage, and confidence outcomes</p>
+              </div>
+            </div>
+            <div class="run-list" id="run-list" aria-live="polite"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script id="source-catalog" type="application/json">__SOURCE_CATALOG__</script>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

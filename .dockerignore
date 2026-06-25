@@ -1,0 +1,13 @@
+.git
+.pytest_cache
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.env
+pgdata
+data
+run_logs.db
+dist
+build

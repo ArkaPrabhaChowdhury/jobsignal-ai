@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: competitive-intelligence-pipeline
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: RUN_LOG_DB
+        value: /tmp/run_logs.db
+      - key: APP_HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 10000
+      - key: STRICT_STARTUP
+        value: "true"
+      - key: PUBLIC_INGEST_ENABLED
+        value: "false"
+      - key: DB_CONNECT_TIMEOUT_SECONDS
+        value: "10"
+      - key: DB_STARTUP_RETRIES
+        value: "20"
+      - key: DB_STARTUP_DELAY_SECONDS
+        value: "2"
+      - key: MIN_CONFIDENCE
+        value: "0.6"
+      - key: MAX_PAGES
+        value: "3"
+      - key: CRAWL_DELAY_MS
+        value: "1500"
+      - key: RAW_SAVE
+        value: "false"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: EMBEDDING_MODEL
+        value: hashing-384
