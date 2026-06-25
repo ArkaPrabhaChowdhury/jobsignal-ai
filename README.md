@@ -31,6 +31,8 @@ Scrapy spiders
   Safe mode. Uses Foundit sitemaps, then scrapes full job detail pages.
 - `foundit_demo`
   Portfolio-demo mode. Starts from the real Foundit results page, extracts page state, calls the site's search endpoint, then visits job detail pages.
+- `greenhouse_playwright`
+  Browser-automation demo. Uses headless Chromium through Playwright to render and interact with a public Greenhouse board before extracting job-detail pages.
 - `greenhouse`
   Public ATS API. Normalizes jobs from configurable Greenhouse boards.
 - `lever`
@@ -44,16 +46,17 @@ Scrapy spiders
 - `forage_ai`
   Direct scraping. Uses Forage AI's XML sitemap and parses its WordPress job-detail pages.
 
-`foundit_demo` is the proof point for actual website scraping beyond RSS or sitemap-only ingestion.
+`foundit_demo` proves results-page/API reverse engineering. `greenhouse_playwright` proves browser automation and page interaction against a public job board.
 
 ## Tech Stack
 
 - Crawling: `Scrapy`
+- Browser automation: `Playwright` through `scrapy-playwright`
 - Enrichment: `Groq`
-- Embeddings: lightweight deterministic hashing vectors for free-tier deployment
-- Storage: `PostgreSQL` + `pgvector`
+- Embeddings: `sentence-transformers/all-MiniLM-L6-v2` on CPU
+- Storage: `PostgreSQL` + `pgvector` cosine search with an HNSW index
 - API: `FastAPI`
-- Tests: `pytest`
+- CI and tests: `GitHub Actions` + `pytest`
 
 ## Quick Start
 
@@ -68,6 +71,7 @@ docker compose up -d db
 
 ```bash
 pip install -r requirements.txt
+python -m playwright install chromium
 ```
 
 4. Run a crawl.
@@ -82,6 +86,12 @@ Real website-scraping demo:
 
 ```bash
 python main.py ingest --role "software engineer" --sources foundit_demo
+
+# JavaScript-rendered browser automation demo
+python main.py ingest --role "software engineer" --sources greenhouse_playwright
+
+# Use another public Greenhouse board when running the spider directly
+scrapy crawl greenhouse_playwright -a role="software engineer" -a board_url="https://job-boards.greenhouse.io/stablekernel"
 
 # Production-oriented mix: ATS APIs, public feeds, and direct HTML extraction
 python main.py ingest --role "software engineer" --sources greenhouse lever ashby himalayas arbeitnow forage_ai
@@ -267,7 +277,7 @@ Use this exact flow in a call or Loom:
 
 1. Open the dashboard home page.
 2. Explain the difference between `foundit` and `foundit_demo`.
-3. Trigger `foundit_demo` ingest for `software engineer`.
+3. Trigger `greenhouse_playwright` ingest for `software engineer` and explain that Chromium renders and filters the board before Scrapy parses it.
 4. Open recent listings and show scraped titles, companies, skills, and source labels.
 5. Ask a query like `What backend skills are trending in India right now?`
 6. Open one of the cited URLs to prove the answer is grounded in scraped pages.
@@ -280,7 +290,7 @@ Use bullets like:
 
 - Built a Scrapy-based competitive intelligence pipeline that scraped live India job listings and transformed them into a searchable skill-intelligence dataset.
 - Added Groq-powered enrichment, sentence-transformer embeddings, and pgvector retrieval to answer natural-language hiring-market questions over scraped data.
-- Implemented both safe crawlers and a results-page scraper demo, then exposed the pipeline through FastAPI, a live dashboard, and automated tests.
+- Implemented safe crawlers, a results-page scraper, and Playwright browser automation, then exposed the pipeline through FastAPI, a live dashboard, and GitHub Actions CI.
 
 If you want one tight project line:
 
@@ -325,8 +335,18 @@ This combination is usually better than linking GitHub alone.
 pytest -q
 ```
 
+GitHub Actions runs the same suite on every push and pull request.
+
+## Embedding Migration
+
+The current embedding model produces normalized 384-dimensional semantic vectors. If the database contains records created by the previous hashing implementation, clear and re-ingest them so every row uses the same vector space:
+
+```sql
+TRUNCATE TABLE job_listings;
+```
+
 ## Ethical Note
 
 The default project settings keep `ROBOTSTXT_OBEY`, retries, and throttle behavior on.
 
-`foundit_demo` is intentionally a portfolio scraper and overrides `ROBOTSTXT_OBEY` so you can demonstrate a real results-page extraction path. Treat it as a demo source, not the production-safe default.
+`foundit_demo` is an intentionally stronger portfolio scraper and overrides `ROBOTSTXT_OBEY`. `greenhouse_playwright` uses a public ATS board while preserving the default robots and throttle settings. Review site terms and robots policies before running any crawler.

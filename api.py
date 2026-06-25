@@ -66,6 +66,11 @@ SOURCE_CATALOG = [
         "description": "Starts from real Foundit search results, extracts page state, calls the site's search endpoint, then scrapes job pages.",
     },
     {
+        "name": "greenhouse_playwright",
+        "mode": "browser-automation-demo",
+        "description": "Renders a public Greenhouse board in headless Chromium, filters it through a browser interaction, then extracts job pages.",
+    },
+    {
         "name": "forage_ai",
         "mode": "html-sitemap",
         "description": "Discovers Forage AI roles through its XML sitemap and extracts resilient full-page job records.",
@@ -1068,7 +1073,7 @@ LANDING_PAGE = """
           </article>
           <article class="panel section-panel">
             <h3 class="panel-heading">Trigger Ingest</h3>
-            <p class="panel-summary">Start a fresh crawl directly from the dashboard. Use <span class="code">foundit_demo</span> for the clearest scraping walkthrough.</p>
+            <p class="panel-summary">Start a fresh crawl directly from the dashboard. Use <span class="code">greenhouse_playwright</span> for the browser-automation walkthrough.</p>
             <form id="ingest-form" class="form-grid">
               <div class="field-group">
                 <label for="role" class="field-label">Role</label>
@@ -1076,7 +1081,7 @@ LANDING_PAGE = """
               </div>
               <div class="field-group">
                 <label for="sources" class="field-label">Sources</label>
-                <input id="sources" name="sources" value="foundit_demo">
+                <input id="sources" name="sources" value="greenhouse_playwright">
                 <div class="field-hint">Comma-separate values such as <span class="code">cutshort,foundit</span> for safe mode.</div>
               </div>
               <button type="submit">Start Ingest</button>
@@ -1108,7 +1113,7 @@ LANDING_PAGE = """
             <h3 class="panel-heading">Recent Runs</h3>
             <p class="panel-summary">Operational telemetry shows what each crawl fetched, stored, or skipped.</p>
             <div class="runs" id="run-list"></div>
-            <p class="footer-note">Safe sources follow robot and throttle defaults. The demo scraper is intentionally stronger so the project can prove a real results-page extraction path.</p>
+            <p class="footer-note">Safe sources follow robot and throttle defaults. Demo scrapers are controlled portfolio examples for results-page and browser-rendered extraction.</p>
           </article>
         </div>
       </section>

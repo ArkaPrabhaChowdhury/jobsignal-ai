@@ -4,6 +4,7 @@ from scrapy.http import TextResponse
 
 from pipeline.spiders.base import BaseJobSpider
 from pipeline.spiders.greenhouse import GreenhouseSpider
+from pipeline.spiders.greenhouse_playwright import GreenhousePlaywrightSpider
 from pipeline.spiders.lever import LeverSpider
 
 
@@ -82,3 +83,42 @@ def test_lever_combines_description_sections():
 
     assert len(items) == 1
     assert "distributed services" in items[0].description
+
+
+def test_greenhouse_playwright_requests_browser_rendering():
+    spider = GreenhousePlaywrightSpider(role="software engineer")
+
+    request = next(spider.start_requests_compat())
+
+    assert request.meta["playwright"] is True
+    assert request.meta["playwright_page_methods"]
+    assert request.url == "https://job-boards.greenhouse.io/stablekernel"
+
+
+def test_greenhouse_playwright_parses_rendered_job_json_ld():
+    spider = GreenhousePlaywrightSpider(role="software engineer")
+    html = """
+    <html><body>
+      <script type="application/ld+json">
+        {
+          "@type": "JobPosting",
+          "title": "Software Engineer",
+          "description": "<p>Build Go APIs and distributed systems.</p>",
+          "hiringOrganization": {"name": "Example"},
+          "jobLocation": {"address": {"addressLocality": "Hyderabad"}},
+          "datePosted": "2026-06-20"
+        }
+      </script>
+    </body></html>
+    """
+    response = TextResponse(
+        url="https://job-boards.greenhouse.io/example/jobs/123",
+        body=html,
+        encoding="utf-8",
+    )
+
+    items = list(spider.parse_rendered_job(response))
+
+    assert len(items) == 1
+    assert items[0].company == "Example"
+    assert items[0].location == "Hyderabad"

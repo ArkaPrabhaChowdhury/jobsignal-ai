@@ -61,6 +61,13 @@ class Database:
                 )
                 """
             )
+            cur.execute(
+                """
+                CREATE INDEX IF NOT EXISTS job_listings_embedding_hnsw
+                ON job_listings
+                USING hnsw (embedding vector_cosine_ops)
+                """
+            )
             conn.commit()
 
     def exists(self, listing_id: str) -> bool:
@@ -104,7 +111,8 @@ class Database:
                 SELECT id, title, company, url, description, location, source, posted_at,
                        skills, confidence, embedding, ingested_at
                 FROM job_listings
-                ORDER BY embedding <-> %s
+                WHERE embedding IS NOT NULL
+                ORDER BY embedding <=> %s
                 LIMIT %s
                 """,
                 (Vector(embedding), limit),

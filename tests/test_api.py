@@ -77,6 +77,15 @@ def test_landing_page_renders_dashboard():
     assert "foundit_demo" in response.text
 
 
+def test_static_favicon_is_served():
+    client = TestClient(app)
+
+    response = client.get("/static/favicon.svg")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("image/svg+xml")
+
+
 def test_stats_endpoint_returns_summary(monkeypatch):
     monkeypatch.setattr("api.Database", lambda: StubDatabase())
     monkeypatch.setattr("api.RunLogStore", lambda: StubRunLogStore())

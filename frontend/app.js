@@ -8,7 +8,7 @@ const $ = (selector) => document.querySelector(selector);
 
 function text(tag, value, className = "") {
   const element = document.createElement(tag);
-  element.textContent = value ?? "—";
+  element.textContent = value ?? "-";
   if (className) element.className = className;
   return element;
 }
@@ -78,7 +78,7 @@ function renderSources(stats) {
   sourceSelect.querySelectorAll("option:not(:first-child)").forEach((option) => option.remove());
   ingestSelect.replaceChildren();
 
-  sourceCatalog.forEach((source, index) => {
+  sourceCatalog.forEach((source) => {
     const count = stats.by_source?.[source.name] || 0;
     const row = document.createElement("div");
     row.className = "source-row";
@@ -92,7 +92,14 @@ function renderSources(stats) {
 
     const filterOption = new Option(source.name, source.name);
     sourceSelect.add(filterOption);
-    const ingestOption = new Option(`${source.name} — ${source.mode}`, source.name, index === 2, index === 2);
+
+    const isDefaultSource = source.name === "greenhouse_playwright";
+    const ingestOption = new Option(
+      `${source.name} - ${source.mode}`,
+      source.name,
+      isDefaultSource,
+      isDefaultSource,
+    );
     ingestSelect.add(ingestOption);
   });
 }
@@ -178,9 +185,9 @@ function renderRuns(runs) {
 }
 
 async function loadDashboard() {
-  setLoading($("#skill-chart"), "Loading skill demand…");
-  setLoading($("#source-table"), "Loading source coverage…");
-  setLoading($("#run-list"), "Loading crawl runs…");
+  setLoading($("#skill-chart"), "Loading skill demand...");
+  setLoading($("#source-table"), "Loading source coverage...");
+  setLoading($("#run-list"), "Loading crawl runs...");
 
   const [statsResponse, listingsResponse, healthResponse] = await Promise.all([
     fetch("/stats"),
@@ -229,7 +236,7 @@ $("#query-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const output = $("#query-result");
   output.className = "query-output empty";
-  output.replaceChildren(text("p", "Analyzing indexed listings…"));
+  output.replaceChildren(text("p", "Analyzing indexed listings..."));
 
   try {
     const response = await fetch(`/query?q=${encodeURIComponent($("#question").value.trim())}`);
@@ -263,7 +270,7 @@ $("#ingest-form").addEventListener("submit", async (event) => {
   const result = $("#ingest-result");
   const selectedSources = Array.from($("#sources").selectedOptions).map((option) => option.value);
   result.className = "inline-result";
-  result.textContent = "Starting ingestion…";
+  result.textContent = "Starting ingestion...";
 
   try {
     const response = await fetch("/ingest", {

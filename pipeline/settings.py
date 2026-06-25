@@ -23,6 +23,7 @@ HTTPCACHE_ENABLED = True
 HTTPCACHE_EXPIRATION_SECS = 900
 HTTPCACHE_IGNORE_HTTP_CODES = [401, 403, 407, 429, 500, 502, 503, 504]
 LOG_LEVEL = settings.log_level
+TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 
 ITEM_PIPELINES = {
     "pipeline.pipelines.ValidatePipeline": 100,
@@ -34,3 +35,11 @@ ITEM_PIPELINES = {
 DOWNLOADER_MIDDLEWARES = {
     "pipeline.middlewares.CrawlerIdentityMiddleware": 400,
 }
+
+DOWNLOAD_HANDLERS = {
+    "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+    "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+}
+PLAYWRIGHT_BROWSER_TYPE = "chromium"
+PLAYWRIGHT_LAUNCH_OPTIONS = {"headless": True}
+PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT = 30_000

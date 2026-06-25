@@ -1,36 +1,55 @@
 from __future__ import annotations
 
-import hashlib
-import math
-import re
 from functools import lru_cache
+from typing import Any
 
 from src.config import get_settings
 
 
 class Embedder:
-    def __init__(self) -> None:
+    def __init__(self, model: Any | None = None) -> None:
         self._settings = get_settings()
+        self._model = model
 
     def embed_texts(self, texts: list[str]) -> list[list[float]]:
-        return [self._embed_hashing(text) for text in texts]
+        if not texts:
+            return []
+
+        embeddings = self.model.encode(
+            texts,
+            batch_size=32,
+            show_progress_bar=False,
+            convert_to_numpy=True,
+            normalize_embeddings=True,
+        )
+        vectors = embeddings.tolist()
+        for vector in vectors:
+            if len(vector) != self._settings.embedding_dimensions:
+                raise ValueError(
+                    f"Embedding model produced {len(vector)} dimensions; "
+                    f"expected {self._settings.embedding_dimensions}"
+                )
+        return vectors
 
     def embed_text(self, text: str) -> list[float]:
         return self.embed_texts([text])[0]
 
-    def _embed_hashing(self, text: str) -> list[float]:
-        """Create a lightweight, deterministic normalized vector for free hosting."""
-        vector = [0.0] * self._settings.embedding_dimensions
-        tokens = re.findall(r"[a-z0-9+#.]{2,}", text.lower())
-        for token in tokens:
-            digest = hashlib.blake2b(token.encode("utf-8"), digest_size=8).digest()
-            bucket = int.from_bytes(digest[:4], "big") % len(vector)
-            sign = 1.0 if digest[4] & 1 else -1.0
-            vector[bucket] += sign
-        norm = math.sqrt(sum(value * value for value in vector))
-        if norm:
-            return [value / norm for value in vector]
-        return vector
+    @property
+    def model(self):
+        if self._model is None:
+            from sentence_transformers import SentenceTransformer
+
+            self._model = SentenceTransformer(
+                self._settings.embedding_model,
+                device="cpu",
+            )
+            dimensions = self._model.get_sentence_embedding_dimension()
+            if dimensions != self._settings.embedding_dimensions:
+                raise ValueError(
+                    f"{self._settings.embedding_model} produces {dimensions} dimensions; "
+                    f"database expects {self._settings.embedding_dimensions}"
+                )
+        return self._model
 
 
 @lru_cache(maxsize=1)
