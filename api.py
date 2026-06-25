@@ -45,7 +45,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="Competitive Intelligence Pipeline", lifespan=lifespan)
+app = FastAPI(title="JobSignal AI", lifespan=lifespan)
 FRONTEND_DIR = Path(__file__).resolve().parent / "frontend"
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
@@ -103,7 +103,7 @@ LANDING_PAGE = """
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Competitive Intelligence Pipeline</title>
+  <title>JobSignal AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -907,7 +907,7 @@ LANDING_PAGE = """
     <header class="topbar reveal">
       <div>
         <div class="brand-kicker">Scrapy + Groq + pgvector</div>
-        <div class="brand-title">Competitive Intelligence Pipeline</div>
+        <div class="brand-title">JobSignal AI</div>
       </div>
       <div class="code">/docs /stats /query /sources</div>
     </header>

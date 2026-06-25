@@ -4,7 +4,7 @@ from src.config import get_settings
 
 settings = get_settings()
 
-BOT_NAME = "competitive_intelligence_pipeline"
+BOT_NAME = "jobsignal_ai"
 
 SPIDER_MODULES = ["pipeline.spiders"]
 NEWSPIDER_MODULE = "pipeline.spiders"

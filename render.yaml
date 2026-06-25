@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: competitive-intelligence-pipeline
+    name: jobsignal-ai
     runtime: docker
     plan: free
     autoDeploy: true

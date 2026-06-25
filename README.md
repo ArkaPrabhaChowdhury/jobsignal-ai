@@ -1,4 +1,4 @@
-# Competitive Intelligence Pipeline
+# JobSignal AI
 
 Production-oriented India job-market intelligence pipeline built with Scrapy, Groq, pgvector, and FastAPI.
 
@@ -284,7 +284,7 @@ Use bullets like:
 
 If you want one tight project line:
 
-> Built a production-style job-market intelligence pipeline with Scrapy, Groq, FastAPI, and pgvector to scrape live listings, extract skills, and answer recruiter-facing market queries.
+> Built JobSignal AI, a production-style job-market intelligence pipeline with Scrapy, Groq, FastAPI, and pgvector to scrape live listings, extract skills, and answer recruiter-facing market queries.
 
 ## How To Showcase It Live
 
@@ -312,7 +312,7 @@ If live crawling is too risky for a public demo, keep production crawling off an
 
 ## Suggested Resume/Portfolio Setup
 
-- Resume project title: `Competitive Intelligence Pipeline for India Job Market`
+- Resume project title: `JobSignal AI`
 - Resume link: deployed dashboard URL
 - GitHub repo: this project with cleaned README
 - Optional: 60-second Loom showing ingest -> stats -> query -> cited listings
