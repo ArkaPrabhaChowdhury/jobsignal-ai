@@ -10,7 +10,7 @@ import uuid
 from pathlib import Path
 
 from fastapi import FastAPI, status
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.config import get_settings
@@ -1293,6 +1293,11 @@ def _run_ingest_sources(role: str, sources: list[str], run_id: str) -> None:
 def landing() -> HTMLResponse:
     page = (FRONTEND_DIR / "index.html").read_text(encoding="utf-8")
     return HTMLResponse(page.replace("__SOURCE_CATALOG__", json.dumps(SOURCE_CATALOG)))
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon() -> FileResponse:
+    return FileResponse(FRONTEND_DIR / "favicon.svg", media_type="image/svg+xml")
 
 
 @app.get("/health")
