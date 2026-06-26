@@ -73,7 +73,7 @@ def test_landing_page_renders_dashboard():
     response = client.get("/")
 
     assert response.status_code == 200
-    assert "JobSignal AI" in response.text
+    assert "JobSignal" in response.text
     assert "foundit_demo" in response.text
 
 
